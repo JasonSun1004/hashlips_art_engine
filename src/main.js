@@ -160,55 +160,55 @@ const writeMetaData = (_data) => {
   fs.writeFileSync(`${buildDir}/_metadata.json`, _data);
 };
 
-// const saveMetaDataSingleFile = (_editionCount) => {
-//   fs.writeFileSync(
-//     `${buildDir}/${_editionCount}.json`,
-//     JSON.stringify(metadataList.find((meta) => meta.edition == _editionCount))
-//   );
-// };
+const saveMetaDataSingleFile = (_editionCount) => {
+  fs.writeFileSync(
+    `${buildDir}/${_editionCount}.json`,
+    JSON.stringify(metadataList.find((meta) => meta.edition == _editionCount))
+  );
+};
 
-// const startCreating = async () => {
-//   let editionCount = 1;
-//   let failedCount = 0;
-//   const layers = layersSetup(layersOrder);
-//   while (editionCount <= editionSize) {
-//     let newDna = createDna(layers);
-//     if (isDnaUnique(dnaList, newDna)) {
-//       let results = constructLayerToDna(newDna, layers);
-//       let loadedElements = [];
+const startCreating = async () => {
+  let editionCount = 1;
+  let failedCount = 0;
+  const layers = layersSetup(layersOrder);
+  while (editionCount <= editionSize) {
+    let newDna = createDna(layers);
+    if (isDnaUnique(dnaList, newDna)) {
+      let results = constructLayerToDna(newDna, layers);
+      let loadedElements = [];
 
-//       results.forEach((layer) => {
-//         loadedElements.push(loadLayerImg(layer));
-//       });
+      results.forEach((layer) => {
+        loadedElements.push(loadLayerImg(layer));
+      });
 
-//       await Promise.all(loadedElements).then((elementArray) => {
-//         ctx.clearRect(0, 0, format.width, format.height);
-//         if (background.generate) {
-//           drawBackground();
-//         }
-//         elementArray.forEach((element) => {
-//           drawElement(element);
-//         });
-//         saveImage(editionCount);
-//         addMetadata(newDna, editionCount);
-//         saveMetaDataSingleFile(editionCount);
-//         console.log(`Created edition: ${editionCount}, with DNA: ${newDna}`);
-//       });
+      await Promise.all(loadedElements).then((elementArray) => {
+        ctx.clearRect(0, 0, format.width, format.height);
+        if (background.generate) {
+          drawBackground();
+        }
+        elementArray.forEach((element) => {
+          drawElement(element);
+        });
+        saveImage(editionCount);
+        addMetadata(newDna, editionCount);
+        saveMetaDataSingleFile(editionCount);
+        console.log(`Created edition: ${editionCount}, with DNA: ${newDna}`);
+      });
 
-//       dnaList.push(newDna);
-//       editionCount++;
-//     } else {
-//       console.log("DNA exists!");
-//       failedCount++;
-//       if (failedCount >= uniqueDnaTorrance) {
-//         console.log(
-//           `You need more layers or elements to generate ${editionSize} artworks!`
-//         );
-//         process.exit();
-//       }
-//     }
-//   }
-//   writeMetaData(JSON.stringify(metadataList));
-// };
+      dnaList.push(newDna);
+      editionCount++;
+    } else {
+      console.log("DNA exists!");
+      failedCount++;
+      if (failedCount >= uniqueDnaTorrance) {
+        console.log(
+          `You need more layers or elements to generate ${editionSize} artworks!`
+        );
+        process.exit();
+      }
+    }
+  }
+  writeMetaData(JSON.stringify(metadataList));
+};
 
 module.exports = { startCreating, buildSetup };
